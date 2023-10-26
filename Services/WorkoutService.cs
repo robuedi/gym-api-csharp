@@ -2,7 +2,7 @@ using web_api.Models;
 
 namespace web_api.Services;
 
-public class WorkoutService : IWorkoutInterface
+public class WorkoutService : IWorkoutService
 {
     private readonly List<Workout> _workouts;
 

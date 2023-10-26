@@ -2,7 +2,7 @@ using web_api.Models;
 
 namespace web_api.Services;
 
-public interface IWorkoutInterface
+public interface IWorkoutService
 {
     public Task<IEnumerable<Workout>> GetAll();
 
