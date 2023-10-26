@@ -8,7 +8,34 @@ public class WorkoutService : IWorkoutService
 
     public WorkoutService()
     {
-        _workouts = new List<Workout>();
+        _workouts = new List<Workout>
+        {
+            new Workout
+            {
+                Id = Guid.NewGuid(),
+                Name = "Week Plan",
+                Description = "Gym exercise plan.",
+                Exercises = new()
+                {
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Push ups",
+                        Sets = 5,
+                        Repetitions = 10,
+                        Duration = 20
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Dumbbell",
+                        Sets = 3,
+                        Repetitions = 20,
+                        Duration = 20
+                    },
+                }
+            }
+        };
     }
 
     public Task<IEnumerable<Workout>> GetAll()

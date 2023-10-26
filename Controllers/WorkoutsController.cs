@@ -6,6 +6,7 @@ namespace web_api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Produces("application/json")]
 public class WorkoutsController : ControllerBase
 {
     private readonly IWorkoutService _workoutService;
@@ -14,33 +15,55 @@ public class WorkoutsController : ControllerBase
         => _workoutService = workoutService;
 
     [HttpGet]
-    public Task<ActionResult<IEnumerable<Workout>>> GetAll()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<ActionResult<IEnumerable<Workout>>> GetAll()
+        => Ok(await _workoutService.GetAll());
 
     [HttpGet("{id}")]
-    public Task<ActionResult<Workout>> Get(Guid id)
+    public async Task<ActionResult<Workout>> Get(Guid id)
     {
-        throw new NotImplementedException();
+        var workout = await _workoutService.GetById(id);
+        if (workout == null)
+        {
+            return NotFound();
+        }
+
+        return workout;
     }
 
     [HttpPost]
-    public Task<IActionResult> Create(Workout workout)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create([FromBody] Workout workout)
     {
-        throw new NotImplementedException();
+        workout.Id = Guid.NewGuid();
+        await _workoutService.Create(workout);
+        return CreatedAtAction(nameof(Get), new { id = workout.Id }, workout);
     }
 
     [HttpPut("{id}")]
-    public Task<IActionResult> Update(Guid id, Workout workout)
+    public async Task<IActionResult> Update(Guid id, [FromBody] Workout workout)
     {
-        throw new NotImplementedException();
+        if (id != workout.Id)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            await _workoutService.Update(workout);
+        }
+        catch (ArgumentException ex) when (ex.Message.Contains("not found"))
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        throw new NotImplementedException();
+        await _workoutService.Delete(id);
+        return NoContent();
     }
-
 }
